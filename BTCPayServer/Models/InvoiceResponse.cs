@@ -83,7 +83,7 @@ namespace BTCPayServer.Models
 
         //"price":5
         [JsonProperty("price")]
-        public decimal Price
+        public decimal? Price
         {
             get; set;
         }

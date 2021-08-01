@@ -31,11 +31,14 @@ namespace BTCPayServer.Services.Rates
 
         public string FormatCurrency(string price, string currency)
         {
-            return FormatCurrency(decimal.Parse(price, CultureInfo.InvariantCulture), currency);
+            return FormatCurrency(price is null ? (decimal?)null : decimal.Parse(price, CultureInfo.InvariantCulture), currency);
         }
-        public string FormatCurrency(decimal price, string currency)
+        public string FormatCurrency(decimal? price, string currency)
         {
-            return price.ToString("C", GetCurrencyProvider(currency));
+            if (price is decimal v)
+                return v.ToString("C", GetCurrencyProvider(currency));
+            else
+                return 0.0m.ToString("C", GetCurrencyProvider(currency)).Replace('0','-');
         }
 
         public NumberFormatInfo GetNumberFormatInfo(string currency, bool useFallback)
@@ -112,22 +115,32 @@ namespace BTCPayServer.Services.Rates
         /// <param name="currency">Currency code</param>
         /// <param name="threeLetterSuffix">Add three letter suffix (like USD)</param>
         /// <returns></returns>
-        public string DisplayFormatCurrency(decimal value, string currency, bool threeLetterSuffix = true)
+        public string DisplayFormatCurrency(decimal? value, string currency)
         {
             var provider = GetNumberFormatInfo(currency, true);
             var currencyData = GetCurrencyData(currency, true);
             var divisibility = currencyData.Divisibility;
-            value = value.RoundToSignificant(ref divisibility);
+            if (value is decimal v)
+            {
+                v = v.RoundToSignificant(ref divisibility);
+            }
+            else
+            {
+                v = 0.0m;
+            }
             if (divisibility != provider.CurrencyDecimalDigits)
             {
                 provider = (NumberFormatInfo)provider.Clone();
                 provider.CurrencyDecimalDigits = divisibility;
             }
-
+            string str;
             if (currencyData.Crypto)
-                return value.ToString("C", provider);
+                str = v.ToString("C", provider);
             else
-                return value.ToString("C", provider) + $" ({currency})";
+                str = v.ToString("C", provider) + $" ({currency})";
+            if (value is null)
+                str = str.Replace('0', '-');
+            return str;
         }
 
         readonly Dictionary<string, CurrencyData> _Currencies;

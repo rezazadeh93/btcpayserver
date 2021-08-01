@@ -105,7 +105,7 @@ namespace BTCPayServer.PaymentRequest
                     return new ViewPaymentRequestViewModel.PaymentRequestInvoice
                     {
                         Id = entity.Id,
-                        Amount = entity.Price,
+                        Amount = entity.Price is decimal v ? v : 0.0m,
                         AmountFormatted = _currencies.FormatCurrency(entity.Price, blob.Currency),
                         Currency = entity.Currency,
                         ExpiryDate = entity.ExpirationTime.DateTime,

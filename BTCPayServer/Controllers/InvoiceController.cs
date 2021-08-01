@@ -185,21 +185,25 @@ namespace BTCPayServer.Controllers
             InvoiceLogs logs = new InvoiceLogs();
             logs.Write("Creation of invoice starting", InvoiceEventData.EventSeverity.Info);
 
-            entity.Price = Math.Max(0.0m, entity.Price);
-            var currencyInfo = _CurrencyNameTable.GetNumberFormatInfo(entity.Currency, false);
-            if (currencyInfo != null)
+            if (entity.Price is decimal price)
             {
-                entity.Price = entity.Price.RoundToSignificant(currencyInfo.CurrencyDecimalDigits);
-            }
-            if (entity.Metadata.TaxIncluded is decimal taxIncluded)
-            {
+                price = Math.Max(0.0m, price);
+                var currencyInfo = _CurrencyNameTable.GetNumberFormatInfo(entity.Currency, false);
                 if (currencyInfo != null)
                 {
-                    taxIncluded = taxIncluded.RoundToSignificant(currencyInfo.CurrencyDecimalDigits);
+                    price = price.RoundToSignificant(currencyInfo.CurrencyDecimalDigits);
                 }
-                taxIncluded = Math.Max(0.0m, taxIncluded);
-                taxIncluded = Math.Min(taxIncluded, entity.Price);
-                entity.Metadata.TaxIncluded = taxIncluded;
+                entity.Price = price;
+                if (entity.Metadata.TaxIncluded is decimal taxIncluded)
+                {
+                    if (currencyInfo != null)
+                    {
+                        taxIncluded = taxIncluded.RoundToSignificant(currencyInfo.CurrencyDecimalDigits);
+                    }
+                    taxIncluded = Math.Max(0.0m, taxIncluded);
+                    taxIncluded = Math.Min(taxIncluded, price);
+                    entity.Metadata.TaxIncluded = taxIncluded;
+                }
             }
 
             var getAppsTaggingStore = _InvoiceRepository.GetAppsTaggingStore(store.Id);

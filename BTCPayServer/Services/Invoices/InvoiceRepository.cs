@@ -206,7 +206,8 @@ namespace BTCPayServer.Services.Invoices
 
                 textSearch.Add(invoice.Id);
                 textSearch.Add(invoice.InvoiceTime.ToString(CultureInfo.InvariantCulture));
-                textSearch.Add(invoice.Price.ToString(CultureInfo.InvariantCulture));
+                if (invoice.Price is decimal p)
+                    textSearch.Add(p.ToString(CultureInfo.InvariantCulture));
                 textSearch.Add(invoice.Metadata.OrderId);
                 textSearch.Add(invoice.StoreId);
                 textSearch.Add(invoice.Metadata.BuyerEmail);
@@ -422,6 +423,21 @@ namespace BTCPayServer.Services.Invoices
                     return;
                 invoiceData.Status = InvoiceState.ToString(invoiceState.Status);
                 invoiceData.ExceptionStatus = InvoiceState.ToString(invoiceState.ExceptionStatus);
+                await context.SaveChangesAsync().ConfigureAwait(false);
+            }
+        }
+        internal async Task UpdateInvoicePrice(string invoiceId, InvoiceEntity invoice)
+        {
+            using (var context = _ContextFactory.CreateContext())
+            {
+                var invoiceData = await context.FindAsync<Data.InvoiceData>(invoiceId).ConfigureAwait(false);
+                if (invoiceData == null)
+                    return;
+                var blob = invoiceData.GetBlob(_Networks);
+                blob.Price = invoice.Price;
+                if (blob.Price is decimal v)
+                    AddToTextSearch(context, invoiceData, new[] { v.ToString(CultureInfo.InvariantCulture) });
+                invoiceData.Blob = ToBytes(blob, null);
                 await context.SaveChangesAsync().ConfigureAwait(false);
             }
         }

@@ -90,7 +90,7 @@ namespace BTCPayServer.Plugins.Shopify
                 {
                     var logic = new OrderTransactionRegisterLogic(client);
                     var resp = await logic.Process(shopifyOrderId, invoice.Id, invoice.Currency,
-                        invoice.Price.ToString(CultureInfo.InvariantCulture), success);
+                        (invoice.Price is decimal v ? v : 0.0m).ToString(CultureInfo.InvariantCulture), success);
                     if (resp != null)
                     {
                         Logs.PayServer.LogInformation($"Registered order transaction {invoice.Price}{invoice.Currency} on Shopify. " +

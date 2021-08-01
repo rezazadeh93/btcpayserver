@@ -75,7 +75,10 @@ namespace BTCPayServer.HostedServices
                     ExpirationTime = dto.ExpirationTime,
                     InvoiceTime = dto.InvoiceTime,
                     PosData = dto.PosData,
-                    Price = dto.Price,
+                    // This type doesn't belong to BTCPay, so we can't make Price nullable
+                    // we don't really care about this though. The user should not use those fields, we only use it
+                    // for backward compat
+                    Price = dto.Price is decimal v ? v : 0.0m,
                     Status = dto.Status,
                     BuyerFields = invoice.RefundMail == null ? null : new Newtonsoft.Json.Linq.JObject() { new JProperty("buyerEmail", invoice.RefundMail) },
                     PaymentSubtotals = dto.PaymentSubtotals,

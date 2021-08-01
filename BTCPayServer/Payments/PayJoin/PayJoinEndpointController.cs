@@ -371,6 +371,7 @@ namespace BTCPayServer.Payments.PayJoin
             }
 
             Money contributedAmount = Money.Zero;
+            bool isTopUp = invoice.Price is null;
             var newTx = ctx.OriginalTransaction.Clone();
             var ourNewOutput = newTx.Outputs[originalPaymentOutput.Index];
             HashSet<TxOut> isOurOutput = new HashSet<TxOut>();
@@ -413,7 +414,7 @@ namespace BTCPayServer.Payments.PayJoin
             if (additionalFee > Money.Zero)
             {
                 // If the user overpaid, taking fee on our output (useful if sender dump a full UTXO for privacy)
-                for (int i = 0; i < newTx.Outputs.Count && additionalFee > Money.Zero && due < Money.Zero; i++)
+                for (int i = 0; i < newTx.Outputs.Count && additionalFee > Money.Zero && due < Money.Zero && !isTopUp; i++)
                 {
                     if (disableoutputsubstitution)
                         break;

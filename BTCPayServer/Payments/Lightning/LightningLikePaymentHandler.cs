@@ -66,7 +66,7 @@ namespace BTCPayServer.Payments.Lightning
             var test = GetNodeInfo(paymentMethod.PreferOnion, supportedPaymentMethod, network);
             
             var invoice = paymentMethod.ParentEntity;
-            decimal due = Extensions.RoundUp(invoice.Price / paymentMethod.Rate, network.Divisibility);
+            decimal due = invoice.Price is decimal v ? Extensions.RoundUp(v / paymentMethod.Rate, network.Divisibility) : 0.0m;
             try
             {
                 due = paymentMethod.Calculate().Due.ToDecimal(MoneyUnit.BTC);

@@ -88,7 +88,8 @@ namespace BTCPayServer.HostedServices
                     // 
                     textSearch.Add(invoice.Id);
                     textSearch.Add(invoice.InvoiceTime.ToString(CultureInfo.InvariantCulture));
-                    textSearch.Add(invoice.Price.ToString(CultureInfo.InvariantCulture));
+                    if (invoice.Price is decimal v)
+                        textSearch.Add(v.ToString(CultureInfo.InvariantCulture));
                     textSearch.Add(invoice.Metadata.OrderId);
                     textSearch.Add(invoice.StoreId);
                     textSearch.Add(invoice.Metadata.BuyerEmail);

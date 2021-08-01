@@ -57,7 +57,7 @@ namespace BTCPayServer.Services.Invoices.Export
         {
             var exportList = new List<ExportInvoiceHolder>();
             var currency = Currencies.GetNumberFormatInfo(invoice.Currency, true);
-            var invoiceDue = invoice.Price;
+            var invoiceDue = invoice.Price is decimal v ? v : 0.0m;
             // in this first version we are only exporting invoices that were paid
             foreach (var payment in invoice.GetPayments(true))
             {
@@ -131,7 +131,7 @@ namespace BTCPayServer.Services.Invoices.Export
         public string PaidCurrency { get; set; }
         public string InvoiceCurrency { get; set; }
         public decimal InvoiceDue { get; set; }
-        public decimal InvoicePrice { get; set; }
+        public decimal? InvoicePrice { get; set; }
         public string InvoiceItemCode { get; set; }
         public string InvoiceItemDesc { get; set; }
         public string InvoiceFullStatus { get; set; }

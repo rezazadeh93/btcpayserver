@@ -1106,7 +1106,8 @@
                     "amount": {
                         "type": "string",
                         "format": "decimal",
-                        "description": "The invoice amount, converted to this payment method's currency"
+                        "nullable": true,
+                        "description": "The amount of the invoice. If null or unspecified, the invoice will be a top-up invoice. (ie. The invoice will consider any payment as a full payment)"
                     },
                     "networkFee": {
                         "type": "string",

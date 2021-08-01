@@ -158,7 +158,7 @@ namespace BTCPayServer.Plugins.Shopify
                 {
                     await new OrderTransactionRegisterLogic(client).Process(orderId, firstInvoiceSettled.Id,
                         firstInvoiceSettled.Currency,
-                        firstInvoiceSettled.Price.ToString(CultureInfo.InvariantCulture), true);
+                        (firstInvoiceSettled.Price is decimal v ? v : 0.0m).ToString(CultureInfo.InvariantCulture), true);
                     order = await client.GetOrder(orderId);
                 }
 

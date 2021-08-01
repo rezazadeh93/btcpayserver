@@ -350,7 +350,7 @@ namespace BTCPayServer.Services.Apps
                 {
                     var contribution = new Contribution();
                     contribution.PaymentMethodId = new PaymentMethodId(p.Currency, PaymentTypes.BTCLike);
-                    contribution.CurrencyValue = p.Price;
+                    contribution.CurrencyValue = p.Price is decimal v ? v : 0.0m;
                     contribution.Value = contribution.CurrencyValue;
 
                     // For hardcap, we count newly created invoices as part of the contributions
