@@ -78,14 +78,7 @@ namespace BTCPayServer.Services
         public override string ToString()
         {
             StringBuilder txt = new StringBuilder();
-            txt.Append($"@Copyright BTCPayServer v{Version}");
-            if (AltcoinsVersion)
-                txt.Append($" (altcoins)");
-            if (!Environment.IsProduction() || !Build.Equals("Release", StringComparison.OrdinalIgnoreCase))
-            {
-                txt.Append($" Environment: {Environment.EnvironmentName} Build: {Build}");
-            }
-            return txt.ToString();
+            return txt.Append($"@ Copyright 2021 RadinIo. All Rights Reserved.").ToString();
         }
     }
 }
